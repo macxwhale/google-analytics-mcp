@@ -1,0 +1,21 @@
+services:
+  analytics-mcp:
+    build: .
+    # stdin must stay open for MCP stdio transport
+    stdin_open: true
+    environment:
+      # Set these in your shell or in a .env file
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS:-}
+      - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT:-}
+    volumes:
+      # ── Option A: Service account key file ──
+      # Mount your key and set GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
+      # - ./service-account-key.json:/app/credentials.json:ro
+
+      # ── Option B: Local gcloud ADC (user credentials) ──
+      # Uncomment the line matching your OS:
+      # Windows (PowerShell):
+      # - ${APPDATA}/gcloud:/root/.config/gcloud:ro
+      # Linux / macOS:
+      # - ${HOME}/.config/gcloud:/root/.config/gcloud:ro
+      []

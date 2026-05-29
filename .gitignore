@@ -67,3 +67,10 @@ pylintrc
 pylintrc.test
 
 .agents/skills
+
+# Credentials - never commit these
+service-account-key.json
+application_default_credentials.json
+
+# Docker
+.env

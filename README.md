@@ -185,6 +185,82 @@ Here are some sample prompts to get you started:
   what are the custom dimensions and custom metrics in my property?
   ```
 
+## Docker 🐳
+
+You can run the MCP server in a Docker container. This avoids needing Python
+or `pipx` installed locally.
+
+### Build the image
+
+```shell
+docker build -t analytics-mcp .
+```
+
+### Run with a service account key
+
+Mount your service account key JSON file and set the
+`GOOGLE_APPLICATION_CREDENTIALS` environment variable:
+
+```shell
+docker run -i --rm \
+  -v /path/to/service-account-key.json:/app/credentials.json:ro \
+  -e GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json \
+  -e GOOGLE_CLOUD_PROJECT=your-project-id \
+  analytics-mcp
+```
+
+### Run with user credentials (gcloud ADC)
+
+If you've already run `gcloud auth application-default login` on your host,
+mount the gcloud config directory:
+
+**Linux / macOS:**
+```shell
+docker run -i --rm \
+  -v ~/.config/gcloud:/root/.config/gcloud:ro \
+  -e GOOGLE_CLOUD_PROJECT=your-project-id \
+  analytics-mcp
+```
+
+**Windows (PowerShell):**
+```powershell
+docker run -i --rm `
+  -v "$env:APPDATA/gcloud:/root/.config/gcloud:ro" `
+  -e GOOGLE_CLOUD_PROJECT=your-project-id `
+  analytics-mcp
+```
+
+### Configure an MCP client to use Docker
+
+In your MCP client settings (e.g. `~/.gemini/settings.json`), point the
+server command at `docker`:
+
+```json
+{
+  "mcpServers": {
+    "analytics-mcp": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-v", "/path/to/service-account-key.json:/app/credentials.json:ro",
+        "-e", "GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json",
+        "-e", "GOOGLE_CLOUD_PROJECT=your-project-id",
+        "analytics-mcp"
+      ]
+    }
+  }
+}
+```
+
+### Docker Compose
+
+A `docker-compose.yml` is included. Edit it to uncomment the volume mount
+matching your credential strategy, then run:
+
+```shell
+docker compose run --rm analytics-mcp
+```
+
 ## Contributing ✨
 
 Contributions welcome! See the [Contributing Guide](CONTRIBUTING.md).

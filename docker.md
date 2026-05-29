@@ -1,4 +1,4 @@
-docker build -t analytics-mcp 
+docker build -t analytics-mcp
 
 docker run -i --rm \
     -v "$HOME/.config/gcloud:/root/.config/gcloud:ro" \
